@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Filament Sensor Runout Dublicator</title>
+</head>
+<body>
+<h1>Filament Sensor Runout</h1>
+<form>
+    <label for="ssid">Enter your ssid:</label>
+    <input type="text" id="ssid" name="ssid" placeholder="Your WIFI Name" required>
+    <br>
+    <label for="pwd">Enter your wifi password:</label>
+    <input type="text" id="pwd" name="pwd" placeholder="Your WIFI Password" required>
+    <br>
+    <label for="octoprint_host">Enter your octoprint_host:</label>
+    <input type="text" id="octoprint_host" name="octoprint_host" placeholder="Your octoprint_host" required>
+    <br>
+    <label for="octoprint_port">Enter your octoprint_port:</label>
+    <input type="text" id="octoprint_port" name="octoprint_port" placeholder="Your octoprint_port" required>
+    <br>
+    <label for="octoprint_api_key">Enter your octoprint_api_key:</label>
+    <input type="text" id="octoprint_api_key" name="octoprint_api_key" placeholder="Your octoprint_api_key" required>
+    <br>
+    <input type="submit" value="Submit" id="post-config">
+</form>
+<p id="message"></p>
+<script>
+    const button = document.getElementById('post-config');
+    button.addEventListener('click', async _ => {
+        try {
+            const body = validateForm()
+            const response = await fetch('/config', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+            console.log('Completed!', response);
+        } catch (err) {
+            console.error(`Error: ${err}`);
+        }
+    });
+
+    function validateForm() {
+        // Get the values from the form fields
+        var ssid = document.getElementById("ssid").value;
+        var pwd = document.getElementById("pwd").value;
+        var octoprintHost = document.getElementById("octoprint_host").value;
+        var octoprintPort = document.getElementById("octoprint_port").value;
+        var octoprintApiKey = document.getElementById("octoprint_api_key").value;
+
+        // Clear any previous error messages
+        document.getElementById("message").innerHTML = "";  // Assuming you have a paragraph with this ID for messages
+        // Validation logic
+        var errorMessage = "";  // To store any error messages
+        // Check if SSID is empty
+        if (ssid.trim() === "") {
+            errorMessage += "Please enter your SSID. \n";
+        }
+        // Check if password is empty
+        if (pwd.trim() === "") {
+            errorMessage += "Please enter your Wi-Fi password. \n";
+        }
+        // Check if Octoprint host is empty
+        if (octoprintHost.trim() === "") {
+            errorMessage += "Please enter your Octoprint host address. \n";
+        }
+        // You can add further validation logic here (e.g., port number format, API key length)
+        // Display error message and prevent submission if there are errors
+        if (errorMessage !== "") {
+            document.getElementById("message").innerHTML = errorMessage;
+            // Prevent form submission
+            throw new Error("incorrect data")
+        }
+        // If validation passes, return true to allow form submission
+        return {
+            "ssid": ssid,
+            "pwd": pwd,
+            "octoprintHost": octoprintHost,
+            "octoprintPort": octoprintPort,
+            "octoprintApiKey": octoprintApiKey
+        };
+    }
+
+</script>
+</body>
+</html>
