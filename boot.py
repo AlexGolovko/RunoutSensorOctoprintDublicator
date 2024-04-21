@@ -8,7 +8,7 @@ import ujson as json
 
 esp.osdebug(None)
 
-machine.freq(80000000)
+machine.freq(40000000)
 
 
 def do_create_apif():
