@@ -68,3 +68,5 @@ print('run')
 uasyncio.create_task(runout_sensor_checker())
 app.run()
 # sudo cu -s 115200 -l /dev/tty.usbmodem1401
+# esptool.py  -p /dev/cu.usbmodem1401 erase_flash
+# esptool.py  -p /dev/cu.usbmodem1401 --baud 460800 write_flash -z 0x0 ESP32_GENERIC_C3-20230426-v1.20.0.bin
