@@ -26,5 +26,9 @@ octoprint_port: Defines the port number used by the OctoPrint server for communi
 octoprint_api_key: Stores the API key required for authentication when interacting with the OctoPrint server.  
 By encapsulating these settings in the config.json file, the project ensures modularity and ease of maintenance. Additionally, providing the ability to change these configurations via the /home page enhances user convenience and flexibility, allowing users to customize the project's behavior without needing to manually edit the configuration file. This approach streamlines the configuration process and empowers users to tailor the system to their specific requirements.
 
+Schema of connection:
+![](./files/dummy_schema.jpg)    
+Installed "device" 
+![](./files/dummy_install.jpg)
 
 
