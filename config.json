@@ -1,4 +1,7 @@
 {
   "ssid": "",
-  "pwd": ""
+  "pwd": "",
+  "octoprint_host":"",
+  "octoprint_port":"",
+  "octoprint_api_key":""
 }
