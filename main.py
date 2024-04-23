@@ -6,6 +6,7 @@ from lib.microdot_asyncio import Microdot
 
 CONFIG_FILENAME = "config.json"
 CONFIG = {}
+FAILED_REST_CALLS = 0
 app = Microdot()
 
 try:
@@ -30,6 +31,14 @@ async def save_wifi_pwd(request):
         f.flush()
 
 
+@app.get('/status')
+async def status(request):
+    status = {
+        'runout_sensor': runout_sensor_pin.value()
+    }
+    return json.dumps(status), 200, {'Content-Type': 'application/json'}
+
+
 runout_sensor_pin = machine.Pin(2, machine.Pin.IN)  # GPIO2
 
 
@@ -37,7 +46,7 @@ def check():
     if runout_sensor_pin.value() == 1:
         host = CONFIG.get('octoprint_host')
         port = CONFIG.get('octoprint_port')
-        url = "http:" + host + ":" + port + "/api/job"
+        url = "http://" + host + ":" + port + "/api/job"
         api_key = CONFIG.get("octoprint_api_key")
         data = {
             "command": "pause",
@@ -52,7 +61,13 @@ def check():
             print("Job paused successfully!")
         else:
             print("Error pausing job:", response.status_code)
+            update_failed_rest_calls()
         response.close()
+
+
+def update_failed_rest_calls():
+    global FAILED_REST_CALLS
+    FAILED_REST_CALLS = FAILED_REST_CALLS + 1
 
 
 async def runout_sensor_checker():
