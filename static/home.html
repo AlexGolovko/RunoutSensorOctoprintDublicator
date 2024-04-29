@@ -25,6 +25,7 @@
     <br>
     <input type="submit" value="Submit" id="post-config">
 </form>
+<button id="testCall">Test call to Octoprint</button>
 <p id="message"></p>
 <script>
     const button = document.getElementById('post-config');
@@ -43,6 +44,24 @@
             console.error(`Error: ${err}`);
         }
     });
+
+    document.getElementById('testCall')
+        .addEventListener('click', async _ => {
+            try {
+                const response = await fetch('/test',{
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                });
+                document.getElementById("message").innerHTML = 'Completed! \nresponse status:' + response.status;
+                console.log('Completed!', response);
+            } catch (err) {
+                document.getElementById("message").innerHTML = 'Error: ' + err;
+                console.error(`Error: ${err}`);
+            }
+        })
 
     function validateForm() {
         // Get the values from the form fields

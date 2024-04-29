@@ -30,6 +30,12 @@ async def save_wifi_pwd(request):
         f.write(json.dumps(request.json))
         f.flush()
 
+@app.post('/test')
+async def test(request):
+    print(request.json)
+    pause_octoprint()
+    return json.dumps(request.json), 201, {'Content-Type': 'application/json'}
+
 
 @app.get('/status')
 async def status(request):
@@ -44,25 +50,29 @@ runout_sensor_pin = machine.Pin(2, machine.Pin.IN)  # GPIO2
 
 def check():
     if runout_sensor_pin.value() == 1:
-        host = CONFIG.get('octoprint_host')
-        port = CONFIG.get('octoprint_port')
-        url = "http://" + host + ":" + port + "/api/job"
-        api_key = CONFIG.get("octoprint_api_key")
-        data = {
-            "command": "pause",
-            "action": "pause"
-        }
-        headers = {
-            "X-Api-Key": api_key,
-            "Content-Type": "application/json"
-        }
-        response = urequests.post(url, headers=headers, json=data)
-        if response.status_code < 300:
-            print("Job paused successfully!")
-        else:
-            print("Error pausing job:", response.status_code)
-            update_failed_rest_calls()
-        response.close()
+        pause_octoprint()
+
+
+def pause_octoprint():
+    host = CONFIG.get('octoprintHost')
+    port = CONFIG.get('octoprintPort')
+    url = "http://" + host + ":" + port + "/api/job"
+    api_key = CONFIG.get("octoprintApiKey")
+    data = {
+        "command": "pause",
+        "action": "pause"
+    }
+    headers = {
+        "X-Api-Key": api_key,
+        "Content-Type": "application/json"
+    }
+    response = urequests.post(url, headers=headers, json=data)
+    if response.status_code < 300:
+        print("Job paused successfully!")
+    else:
+        print("Error pausing job:", response.status_code)
+        update_failed_rest_calls()
+    response.close()
 
 
 def update_failed_rest_calls():
